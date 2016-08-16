@@ -6,6 +6,25 @@
   margin: 0 0 15px 0;
   padding: 0 15px;
 
+  &.profile-form-center-card {
+    width: 40% !important;
+    margin: 30px auto;
+    &.profile-form-center-card-transparent {
+      background-color: transparent;
+      box-shadow: 0;
+    }
+    .profile-title {
+      font-size: 20px;
+      color: black;
+    }
+    .profile-company-name {
+      font-size: 14px;
+      color: #98989A;
+      padding: 7px 0;
+
+    }
+  }
+
   i.material-icons {
     color: $mm-brand-blue;
   }
@@ -50,6 +69,9 @@
   .profile-form-grid {
     width: 100%;
 
+    &.profile-form-grid-tranparent {
+      box-shadow: 0;
+    }
     .profile-form-row, .profile-form-row > .basic-info {
       display: flex;
       flex-direction: row;

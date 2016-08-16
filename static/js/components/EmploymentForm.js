@@ -316,7 +316,7 @@ class EmploymentForm extends ProfileFormFields {
         >
           {this.editWorkHistoryForm()}
         </Dialog>
-        <Card shadow={1} className={`profile-form ${cardClass()}`}>
+        <Card shadow={1} className={`profile-form profile-form-center-card ${cardClass()}`}>
           <Grid className="profile-form-grid">
             <Cell col={12} className="profile-form-row profile-card-header">
               <span>
