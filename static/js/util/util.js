@@ -8,6 +8,7 @@ import _ from 'lodash';
 import iso3166 from 'iso-3166-2';
 import urljoin from 'url-join';
 import { Maybe, Just, Nothing } from 'sanctuary';
+import Icon from 'react-mdl/lib/Icon';
 
 import {
   EDUCATION_LEVELS,
@@ -52,30 +53,30 @@ export function makeProfileProgressDisplay(active: string) {
   const textY = (height - (radius * 2)) / 2 + radius * 2;
   const circleY = radius + paddingY;
 
-  const greenFill = "#00964e", greenLine = "#7dcba7";
+  const greenFill = "#30BB5C", darkGreyFill = "#626262";
   const greyStroke = "#ececec", lightGreyText = "#b7b7b7", darkGreyText = "#888888";
   const greyFill = "#eeeeee", greyCircle = "#dddddd";
   const colors = {
     completed: {
-      fill: greenFill,
+      fill: darkGreyFill,
       stroke: "white",
       circleText: "white",
-      text: greenFill,
-      line: greenLine
+      text: lightGreyText,
+      fontWeight: 300,
     },
     current: {
-      fill: "white",
+      fill: greenFill,
       stroke: greyStroke,
-      circleText: "black",
+      circleText: "white",
       text: "black",
-      line: greyStroke
+      fontWeight: 700,
     },
     future: {
       fill: greyFill,
       stroke: greyCircle,
       circleText: darkGreyText,
       text: lightGreyText,
-      line: greyStroke
+      fontWeight: 700,
     }
   };
 
@@ -94,6 +95,36 @@ export function makeProfileProgressDisplay(active: string) {
 
     const circleX = paddingX + radius + circleDistance * i;
     const nextCircleX = paddingX + radius + circleDistance * (i + 1);
+
+    let circleLabel;
+    if ( i < activeTab ) {
+      circleLabel = <foreignObject
+        key={`circltext_${i}`}
+        x={circleX - 15}
+        y={circleY - 15}
+        style={{
+          color: "white",
+        }}
+      >
+        <Icon style={{fontSize: "30px"}} name="check" />
+      </foreignObject>;
+    } else {
+      circleLabel = <text
+        key={`circletext_${i}`}
+        x={circleX}
+        y={circleY}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{
+          fill: colorScheme.circleText,
+          fontWeight: 700,
+          fontSize: "12pt"
+        }}
+      >
+        { i + 1 }
+      </text>;
+    }
+
     elements.push(
       <circle
         key={`circle_${i}`}
@@ -110,27 +141,15 @@ export function makeProfileProgressDisplay(active: string) {
         textAnchor="middle"
         style={{
           fill: colorScheme.text,
-          fontWeight: 700,
+          fontWeight: colorScheme.fontWeight,
           fontSize: "12pt"
         }}
       >
         {label}
       </text>,
-      <text
-        key={`circletext_${i}`}
-        x={circleX}
-        y={circleY}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        style={{
-          fill: colorScheme.circleText,
-          fontWeight: 700,
-          fontSize: "12pt"
-        }}
-      >
-        {i + 1}
-      </text>
+      circleLabel
     );
+
     if (i !== numCircles - 1) {
       elements.push(
         <line
@@ -139,7 +158,7 @@ export function makeProfileProgressDisplay(active: string) {
           x2={nextCircleX - radius}
           y1={circleY}
           y2={circleY}
-          stroke={colorScheme.line}
+          stroke={"#ececec"}
           strokeWidth={2}
         />
       );

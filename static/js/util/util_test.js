@@ -218,8 +218,8 @@ describe('utility functions', () => {
         let foundCircle = false, foundCircleText = false, foundText = false;
         for (let child of svg.props.children[1]) {
           if (child.key === `circle_${i}`) {
-            // the white circle should be the currently selected one
-            assert.equal(child.props.fill, "white");
+            // the green circle should be the currently selected one
+            assert.equal(child.props.fill, "#30BB5C");
             foundCircle = true;
           }
           if (child.key === `circletext_${i}`) {
