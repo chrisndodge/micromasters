@@ -109,6 +109,7 @@
 
     .pagination-sort {
       justify-content: flex-end;
+      align-items: center;
 
       .sk-pagination-navigation {
         display: flex;
@@ -209,5 +210,11 @@
         height: 35px;
       }
     }
+  }
+}
+
+.sk-select {
+  > select {
+    background-color: $fg-grey;
   }
 }
