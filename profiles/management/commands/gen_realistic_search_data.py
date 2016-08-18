@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from profiles.models import Employment, Education
 from courses.models import Program, Course, CourseRun
 from dashboard.models import CachedCertificate, CachedEnrollment
+from roles.models import Role
+from roles.roles import Staff
 from micromasters.utils import load_json_from_file
 from backends.edxorg import EdxOrgOAuth2
 from search.api import recreate_index
@@ -233,13 +235,13 @@ def deserialize_program_data(program_data):
 def deserialize_program_data_list(program_data_list):
     """Deserializes a list of Program data"""
     new_program_count = 0
+    programs = []
     for program_data in program_data_list:
         # Set the description to make this Program easily identifiable as a 'fake'
         program_data['description'] = FAKE_PROGRAM_DESC_PREFIX + program_data['description']
         program_data['live'] = True
-        deserialize_program_data(program_data)
-        new_program_count += 1
-    return new_program_count
+        programs.append(deserialize_program_data(program_data))
+    return programs
 
 
 class Command(BaseCommand):
@@ -247,6 +249,21 @@ class Command(BaseCommand):
     Generates a set of realistic users and programs/courses to help us test search
     """
     help = "Generates a set of realistic users and programs/courses to help us test search"
+
+    def add_arguments(self, parser):
+        # Positional arguments
+        parser.add_argument(
+            '--staff-user',
+            action='store',
+            dest='staff_user',
+            help='Username for a user to assign the staff role for the programs created by this script.'
+        )
+
+    @staticmethod
+    def assign_staff_user_to_programs(username, programs):
+        staff_user = User.objects.get(username=username)
+        for program in programs:
+            Role.objects.create(user=staff_user, program=program, role=Staff.ROLE_ID)
 
     def handle(self, *args, **options):
         program_data_list = load_json_from_file(PROGRAM_DATA_PATH)
@@ -256,11 +273,13 @@ class Command(BaseCommand):
         if len(user_data_list) == existing_fake_user_count and len(program_data_list) == existing_fake_program_count:
             self.stdout.write("Realistic users and programs appear to exist already.")
         else:
-            new_program_count = deserialize_program_data_list(program_data_list)
+            new_programs = deserialize_program_data_list(program_data_list)
+            if options.get('staff_user', None):
+                self.assign_staff_user_to_programs(options['staff_user'], new_programs)
             fake_course_runs = CourseRun.objects.filter(
                 course__program__description__contains=FAKE_PROGRAM_DESC_PREFIX
             ).all()
             new_user_count = deserialize_user_data_list(user_data_list, fake_course_runs)
             recreate_index()
-            self.stdout.write("Created {} new programs from '{}'.".format(new_program_count, PROGRAM_DATA_PATH))
+            self.stdout.write("Created {} new programs from '{}'.".format(len(new_programs), PROGRAM_DATA_PATH))
             self.stdout.write("Created {} new users from '{}'.".format(new_user_count, USER_DATA_PATH))
