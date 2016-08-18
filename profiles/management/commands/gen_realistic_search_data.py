@@ -8,6 +8,8 @@ from profiles.models import Employment, Education
 from courses.models import Program, Course, CourseRun
 from dashboard.models import CachedCertificate, CachedEnrollment
 from micromasters.utils import load_json_from_file
+from backends.edxorg import EdxOrgOAuth2
+from search.api import recreate_index
 
 
 USER_DATA_PATH = 'profiles/management/realistic_user_data.json'
@@ -156,6 +158,11 @@ def deserialize_user_data(user_data, course_runs):
         )
     )
     user = deserialize_model_data(User, user_model_data)
+    # Create social username
+    user.social_auth.create(
+        provider=EdxOrgOAuth2.name,
+        uid=user.username,
+    )
     # Create new cached edX data records for each type we care about and associate them with a User and CourseRun
     for cached_model_deserializer in CACHED_MODEL_DESERIALIZERS:
         if cached_model_deserializer.data_key in user_data:
@@ -229,6 +236,7 @@ def deserialize_program_data_list(program_data_list):
     for program_data in program_data_list:
         # Set the description to make this Program easily identifiable as a 'fake'
         program_data['description'] = FAKE_PROGRAM_DESC_PREFIX + program_data['description']
+        program_data['live'] = True
         deserialize_program_data(program_data)
         new_program_count += 1
     return new_program_count
@@ -253,5 +261,6 @@ class Command(BaseCommand):
                 course__program__description__contains=FAKE_PROGRAM_DESC_PREFIX
             ).all()
             new_user_count = deserialize_user_data_list(user_data_list, fake_course_runs)
+            recreate_index()
             self.stdout.write("Created {} new programs from '{}'.".format(new_program_count, PROGRAM_DATA_PATH))
             self.stdout.write("Created {} new users from '{}'.".format(new_user_count, USER_DATA_PATH))
