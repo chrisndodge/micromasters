@@ -3,6 +3,7 @@
 @import "page_layout";
 @import "navbar";
 @import "dashboard";
+@import "general_styles";
 @import "homepage";
 @import "program_page";
 @import "user_menu";
@@ -17,12 +18,8 @@
 @import "terms_of_service_dialog";
 @import "user_chip";
 
-$border-box-sizing: true !global;
 
-body {
-  background-color: $page-background;
-  font-family: 'Roboto', sans-serif !important;
-}
+
 
 .selected {
   font-weight: bold;
