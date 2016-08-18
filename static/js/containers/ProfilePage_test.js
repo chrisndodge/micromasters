@@ -351,64 +351,6 @@ describe("ProfilePage", function() {
     });
   });
 
-  it("validates education switches on the education page", () => {
-    setStep(EDUCATION_STEP);
-    return renderComponent('/profile').then(([, div]) => {
-      // close all switches and remove all education so we don't get validation errors
-      let receivedProfile = Object.assign({}, USER_PROFILE_RESPONSE, {
-        education: [],
-        email_optin: true,
-      });
-      helper.store.dispatch(receiveGetUserProfileSuccess(SETTINGS.username, receivedProfile));
-      helper.store.dispatch(setEducationDegreeInclusions(
-        Object.assign({}, noInclusions, {
-          [HIGH_SCHOOL]: true
-        })
-      ));
-      helper.store.dispatch(setWorkHistoryEdit(true));
-
-      let button = div.querySelector(nextButtonSelector);
-      assert(button.innerHTML.includes("Next"));
-      let updatedProfile = Object.assign({}, receivedProfile, {
-        email_optin: true,
-        filled_out: true
-      });
-
-      return confirmSaveButtonBehavior(updatedProfile, {button: button}, true).then(state => {
-        assert.deepEqual(state.profiles[SETTINGS.username].edit.errors, {
-          [`education_${HIGH_SCHOOL}_required`]:
-            `High school is required if switch is on. Please add a degree or switch it off.`
-        });
-      });
-    });
-  });
-
-  it(`validates employment switches when saving the employment page`, () => {
-    setStep(EMPLOYMENT_STEP);
-    return renderComponent('/profile').then(([, div]) => {
-      // close all switches and remove all education so we don't get validation errors
-      let receivedProfile = Object.assign({}, USER_PROFILE_RESPONSE, {
-        work_history: [],
-        email_optin: true,
-      });
-      helper.store.dispatch(receiveGetUserProfileSuccess(SETTINGS.username, receivedProfile));
-      helper.store.dispatch(setWorkHistoryEdit(true));
-
-      let button = div.querySelector(nextButtonSelector);
-      assert(button.innerHTML.includes("Next"));
-      let updatedProfile = Object.assign({}, receivedProfile, {
-        email_optin: true,
-        filled_out: true
-      });
-
-      return confirmSaveButtonBehavior(updatedProfile, {button: button}, true).then(state => {
-        assert.deepEqual(state.profiles[SETTINGS.username].edit.errors, {
-          work_history_required: "Work history is required if switch is on. Please add work history or switch it off."
-        });
-      });
-    });
-  });
-
   it('does not validate education and employment switches when saving the privacy page', () => {
     setStep(PRIVACY_STEP);
     return renderComponent('/profile').then(([, div]) => {

@@ -12,7 +12,6 @@ import type { UIState } from '../reducers/ui';
 import { filterPositiveInt } from './util';
 import {
   HIGH_SCHOOL,
-  EDUCATION_LEVELS,
   PERSONAL_STEP,
   EDUCATION_STEP,
   EMPLOYMENT_STEP,
@@ -118,27 +117,6 @@ export function educationValidation(profile: Profile): ValidationErrors {
   }
 }
 
-export function educationUiValidation(profile: Profile, ui: UIState): ValidationErrors {
-  if (profile.education === undefined) {
-    profile = Object.assign({}, profile, {
-      education: []
-    });
-  }
-
-  let errors = {};
-  if ( profile.education === undefined ) {
-    return errors;
-  }
-  for (let {value, label} of EDUCATION_LEVELS) {
-    let items = profile.education.filter(education => education.degree_name === value);
-    if (ui.educationDegreeInclusions[value] && items.length === 0) {
-      errors[`education_${value}_required`] =
-        `${label} is required if switch is on. Please add a degree or switch it off.`;
-    }
-  }
-  return errors;
-}
-
 export type WorkEntry = [string, WorkHistoryEntry];
 export function employmentValidation(profile: Profile): ValidationErrors {
   let messages = {
@@ -179,16 +157,6 @@ export function employmentValidation(profile: Profile): ValidationErrors {
     });
 
     return errors;
-  } else {
-    return {};
-  }
-}
-
-export function employmentUiValidation(profile: Profile, ui: UIState): ValidationErrors {
-  if (ui.workHistoryEdit && _.isEmpty(profile.work_history)) {
-    return {
-      work_history_required: "Work history is required if switch is on. Please add work history or switch it off."
-    };
   } else {
     return {};
   }

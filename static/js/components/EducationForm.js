@@ -191,7 +191,6 @@ class EducationForm extends ProfileFormFields {
   render() {
     let {
       profile,
-      errors,
       ui: {
         educationDegreeInclusions,
         showEducationDeleteDialog,
@@ -226,11 +225,6 @@ class EducationForm extends ProfileFormFields {
             { this.educationLevelRadioSwitch(educationDegreeInclusions, level) }
           </Cell>
           {this.renderEducationLevel(level)}
-          <Cell col={12}>
-            <span className="validation-error-text-large">
-              {errors[`education_${level.value}_required`]}
-            </span>
-          </Cell>
         </Grid>
       </Card>
     ));

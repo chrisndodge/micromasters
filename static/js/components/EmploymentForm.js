@@ -257,7 +257,6 @@ class EmploymentForm extends ProfileFormFields {
         showWorkDeleteDialog,
         showWorkDeleteAllDialog,
       },
-      errors,
       showSwitch,
     } = this.props;
     const actions = <ValidationAlert {...this.props}>
@@ -325,11 +324,6 @@ class EmploymentForm extends ProfileFormFields {
               { workSwitch() }
             </Cell>
             {this.renderWorkHistory()}
-            <Cell col={12}>
-              <span className="validation-error-text-large">
-                {errors.work_history_required}
-              </span>
-            </Cell>
           </Grid>
         </Card>
       </div>

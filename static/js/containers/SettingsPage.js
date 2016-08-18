@@ -13,10 +13,7 @@ import {
 import ProfileFormContainer from './ProfileFormContainer';
 import PrivacyForm from '../components/PrivacyForm';
 import ProfileProgressControls from '../components/ProfileProgressControls';
-import {
-    combineValidators,
-    privacyValidation,
-} from '../util/validation';
+import { privacyValidation } from '../util/validation';
 import { getPreferredName } from '../util/util';
 
 class SettingsPage extends ProfileFormContainer {
@@ -57,9 +54,7 @@ class SettingsPage extends ProfileFormContainer {
                   nextBtnLabel="Save"
                   {...props}
                   isLastTab={true}
-                  validator={
-                    combineValidators(privacyValidation)
-                  }
+                  validator={privacyValidation}
                 />
               </Cell>
             </Grid>

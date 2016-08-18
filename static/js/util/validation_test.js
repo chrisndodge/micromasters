@@ -7,9 +7,7 @@ import { Just } from 'sanctuary';
 import {
   personalValidation,
   educationValidation,
-  educationUiValidation,
   employmentValidation,
-  employmentUiValidation,
   privacyValidation,
   validateProfileComplete,
   validateDay,
@@ -20,14 +18,11 @@ import {
 } from './validation';
 import {
   USER_PROFILE_RESPONSE,
-  EDUCATION_LEVELS,
-  BACHELORS,
   HIGH_SCHOOL,
   PERSONAL_STEP,
   EMPLOYMENT_STEP,
   PRIVACY_STEP,
 } from '../constants';
-import { INITIAL_UI_STATE } from '../reducers/ui';
 import { assertMaybeEquality, assertIsNothing } from './sanctuary_test';
 
 describe('Profile validation functions', () => {
@@ -139,24 +134,6 @@ describe('Profile validation functions', () => {
         }]
       }, educationValidation(clone));
     });
-
-    it('should complain about switches being on if there are no elements in the list', () => {
-      let profile = Object.assign({}, USER_PROFILE_RESPONSE, {
-        education: [{
-          degree_name: BACHELORS
-        }]
-      });
-      let ui = Object.assign({}, INITIAL_UI_STATE);
-      ui.educationDegreeInclusions[HIGH_SCHOOL] = true;
-      ui.educationDegreeInclusions[BACHELORS] = true;
-
-      let errors = educationUiValidation(profile, ui);
-      let highSchoolLabel = EDUCATION_LEVELS.find(education => education.value === HIGH_SCHOOL).label;
-      assert.deepEqual(errors, {
-        [`education_${HIGH_SCHOOL}_required`]:
-          `${highSchoolLabel} is required if switch is on. Please add a degree or switch it off.`
-      });
-    });
   });
 
   describe('Employment validation', () => {
@@ -187,20 +164,6 @@ describe('Profile validation functions', () => {
           company_name: 'Company Name is required'
         }]
       }, employmentValidation(clone));
-    });
-
-    it('should complain about the switch being on if there are no elements in the list', () => {
-      let profile = Object.assign({}, USER_PROFILE_RESPONSE, {
-        work_history: []
-      });
-      let ui = Object.assign({}, INITIAL_UI_STATE, {
-        workHistoryEdit: true
-      });
-
-      let errors = employmentUiValidation(profile, ui);
-      assert.deepEqual(errors, {
-        work_history_required: `Work history is required if switch is on. Please add work history or switch it off.`
-      });
     });
 
     it('should reject end date before start date', () => {

@@ -3,11 +3,7 @@ import React from 'react';
 
 import ProfileProgressControls from './ProfileProgressControls';
 import EducationForm from './EducationForm';
-import {
-  educationUiValidation,
-  educationValidation,
-  combineValidators,
-} from '../util/validation';
+import { educationValidation } from '../util/validation';
 import type { Profile, SaveProfileFunc } from '../flow/profileTypes';
 import type { UIState } from '../reducers/ui';
 
@@ -21,15 +17,14 @@ class EducationTab extends React.Component {
   };
 
   render() {
-    let validator = combineValidators(educationValidation, educationUiValidation);
     return (
       <div>
-        <EducationForm {...this.props} validator={validator} />
+        <EducationForm {...this.props} validator={educationValidation} />
         <ProfileProgressControls
           {...this.props}
           nextBtnLabel="Next"
           isLastTab={false}
-          validator={validator}
+          validator={educationValidation}
         />
       </div>
     );
