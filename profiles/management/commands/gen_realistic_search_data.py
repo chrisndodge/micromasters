@@ -234,7 +234,6 @@ def deserialize_program_data(program_data):
 
 def deserialize_program_data_list(program_data_list):
     """Deserializes a list of Program data"""
-    new_program_count = 0
     programs = []
     for program_data in program_data_list:
         # Set the description to make this Program easily identifiable as a 'fake'
@@ -261,6 +260,9 @@ class Command(BaseCommand):
 
     @staticmethod
     def assign_staff_user_to_programs(username, programs):
+        """
+        Assigns the 'staff' role to all given programs for a user with a given username
+        """
         staff_user = User.objects.get(username=username)
         for program in programs:
             Role.objects.create(user=staff_user, program=program, role=Staff.ROLE_ID)
